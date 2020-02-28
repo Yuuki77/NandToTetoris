@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/Mux.hdl
 
-/** 
+/**
  * Multiplexor:
  * out = a if sel == 0
  *       b otherwise
@@ -14,5 +14,59 @@ CHIP Mux {
     OUT out;
 
     PARTS:
-    // Put your code here:
+    //  a * not (b) * not(sel)
+    Nand(a=b, b=b, out=notb);
+    Nand(a=sel, b=sel, out=notsel);
+
+    // And(a , not(b)
+    Nand(a=a, b=notb, out=tmp);
+    Nand(a=tmp, b=tmp,out=aAndNotB);
+
+    // And(aAndNotb, not(sel)
+    Nand(a=aAndNotB, b=notsel, out=tmp2);
+    Nand(a=tmp2, b=tmp2,out=ans1);
+
+    // a * b * not sel
+    // And(a, b)
+    Nand(a=a, b=b, out=tmp1);
+    Nand(a=tmp1, b=tmp1,out=aAndb);
+
+    // And(aAndB, not(sel))
+    Nand(a=aAndb, b=notsel, out=tmp3);
+    Nand(a=tmp3, b=tmp3,out=ans2);
+
+    // not(a) * b * sel
+    Nand(a=a, b=a, out=notA);
+
+    // And(not(a), b)
+    Nand(a=notA, b=b, out=tmp4);
+    Nand(a=tmp4, b=tmp4,out=notAandB);
+
+
+    // And(notAndB, sel)
+    Nand(a=notAandB, b=sel, out=tmp19);
+    Nand(a=tmp19, b=tmp19,out=ans3);
+
+    // a * b* sel
+    // And(a * b)
+    Nand(a=a, b=b, out=temp5);
+    Nand(a=temp5, b=temp5,out=aAndB);
+
+    // And(aAndB, sel)
+    Nand(a=aAndB, b=sel, out=temp6);
+    Nand(a=temp6, b=temp6,out=ans4);
+
+    // Or(ans1, ans2, ans3, and4)
+    Nand(a=ans1, b=ans1, out=temp7);
+    Nand(a=ans2, b=ans2, out=temp8);
+    Nand(a=temp7, b=temp8, out = ans1OrAns2);
+
+    // Or (ans3, ans4)
+    Nand(a=ans3, b=ans3, out=temp9);
+    Nand(a=ans4, b=ans4, out=temp10);
+    Nand(a=temp9, b=temp10, out = ans3OrAns4);
+
+    Nand(a=ans1OrAns2, b=ans1OrAns2, out=temp11);
+    Nand(a=ans3OrAns4, b=ans3OrAns4, out=temp12);
+    Nand(a=temp11, b=temp12, out=out);
 }
